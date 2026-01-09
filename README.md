@@ -14,11 +14,11 @@ A beautiful, modern music streaming interface for Sonos systems, designed for wa
 
 ## Requirements
 
-- Raspberry Pi 4 with Pi OS 64-bit
-- Docker and Docker Compose
+- Node.js 20 or higher
+- npm or yarn
 - Sonos account with API credentials
 
-## Quick Start on Raspberry Pi
+## Quick Start
 
 1. **Clone the repository:**
    ```bash
@@ -26,22 +26,14 @@ A beautiful, modern music streaming interface for Sonos systems, designed for wa
    cd musicStreamer
    ```
 
-2. **Run the setup script:**
+2. **Install dependencies:**
    ```bash
-   chmod +x setup.sh
-   ./setup.sh
+   npm install
    ```
 
-   The script will:
-   - Check if running on ARM64 architecture (Raspberry Pi 4)
-   - Check if Docker is installed (install if needed)
-   - Verify Docker Compose is available
-   - Create a `.env` file template if it doesn't exist
-   - Build and start the application using Docker Compose
-
-3. **Configure your `.env` file:**
+3. **Set up environment variables:**
    
-   Edit `.env` and add your Sonos API credentials:
+   Create a `.env` file in the root directory:
    ```env
    DATABASE_URL="file:./prisma/dev.db"
    SONOS_CLIENT_ID=your_sonos_client_id
@@ -51,41 +43,20 @@ A beautiful, modern music streaming interface for Sonos systems, designed for wa
    
    **Note:** For local development/testing, you can use `https://lvh.me:3000/api/sonos/callback` as the callback URL.
 
-4. **Access the application:**
+4. **Set up the database:**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+6. **Access the application:**
    
-   Open your browser and navigate to `https://localhost` or `https://<raspberry-pi-ip>`
-   
-   **Note:** The setup script automatically generates SSL certificates for HTTPS. You'll see a security warning because it's a self-signed certificate - this is normal for local/private networks. Click "Advanced" and "Proceed" to continue.
-   
-   The database will be automatically initialized on first container start.
-
-## Manual Setup
-
-If you prefer to set up manually:
-
-### Install Docker
-
-```bash
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker $USER
-```
-
-Log out and log back in for group changes to take effect.
-
-### Build and Run
-
-```bash
-docker compose build
-docker compose up -d
-```
-
-## Docker Commands
-
-- **View logs:** `docker compose logs -f`
-- **Stop the app:** `docker compose down`
-- **Restart the app:** `docker compose restart`
-- **Rebuild:** `docker compose build --no-cache`
+   Open your browser and navigate to `http://localhost:3000`
 
 ## Development
 
