@@ -49,14 +49,45 @@ A beautiful, modern music streaming interface for Sonos systems, designed for wa
    npx prisma db push
    ```
 
-5. **Start the development server:**
+5. **Start the application:**
+   
+   **Production mode (recommended - handles everything automatically):**
+   ```bash
+   npm run start:prod
+   ```
+   
+   This script will:
+   - Generate SSL certificates (if they don't exist)
+   - Set up the database (Prisma generate and db push)
+   - Build the application
+   - Start the HTTPS server
+   
+   **Development mode (with HTTPS):**
    ```bash
    npm run dev
+   ```
+   
+   **Manual production setup:**
+   ```bash
+   # Generate certificates
+   npm run generate-certs
+   
+   # Set up database
+   npx prisma generate
+   npx prisma db push
+   
+   # Build and start
+   npm run build
+   npm start
    ```
 
 6. **Access the application:**
    
-   Open your browser and navigate to `http://localhost:3000`
+   Open your browser and navigate to:
+   - **HTTPS:** `https://localhost:3000` or `https://<raspberry-pi-ip>:3000`
+   - **HTTP (dev only):** `http://localhost:3000`
+   
+   **Note:** You'll see a security warning because it's a self-signed certificate - this is normal for local/private networks. Click "Advanced" → "Proceed to localhost (unsafe)" to continue.
 
 ## Development
 

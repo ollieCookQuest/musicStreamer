@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev --experimental-https",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "node server.js",
+    "start:http": "next start",
+    "start:prod": "chmod +x start-production.sh && ./start-production.sh",
+    "lint": "next lint",
+    "generate-certs": "chmod +x generate-certs.sh && ./generate-certs.sh"
   },
   "dependencies": {
     "@prisma/client": "^6.19.1",
