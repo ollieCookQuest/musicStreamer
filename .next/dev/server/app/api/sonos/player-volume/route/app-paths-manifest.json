@@ -1,0 +1,3 @@
+{
+  "/api/sonos/player-volume/route": "app/api/sonos/player-volume/route.js"
+}

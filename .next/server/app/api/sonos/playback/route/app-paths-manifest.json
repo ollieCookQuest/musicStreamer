@@ -1,0 +1,3 @@
+{
+  "/api/sonos/playback/route": "app/api/sonos/playback/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/spotify/auth/route": "app/api/spotify/auth/route.js"
+}

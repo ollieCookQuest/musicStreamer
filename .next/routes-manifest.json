@@ -1,0 +1,212 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/preferences",
+      "regex": "^/api/preferences(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/preferences(?:/)?$"
+    },
+    {
+      "page": "/api/reset-device",
+      "regex": "^/api/reset\\-device(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/reset\\-device(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/callback",
+      "regex": "^/api/sonos/callback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/callback(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/control",
+      "regex": "^/api/sonos/control(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/control(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/disconnect",
+      "regex": "^/api/sonos/disconnect(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/disconnect(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/groups",
+      "regex": "^/api/sonos/groups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/groups(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/library",
+      "regex": "^/api/sonos/library(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/library(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/library/action",
+      "regex": "^/api/sonos/library/action(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/library/action(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/library/metadata",
+      "regex": "^/api/sonos/library/metadata(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/library/metadata(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/library/search",
+      "regex": "^/api/sonos/library/search(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/library/search(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/login",
+      "regex": "^/api/sonos/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/login(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/playback",
+      "regex": "^/api/sonos/playback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/playback(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/player-volume",
+      "regex": "^/api/sonos/player\\-volume(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/player\\-volume(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/players",
+      "regex": "^/api/sonos/players(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/players(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/seek",
+      "regex": "^/api/sonos/seek(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/seek(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/state",
+      "regex": "^/api/sonos/state(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/state(?:/)?$"
+    },
+    {
+      "page": "/api/sonos/volume",
+      "regex": "^/api/sonos/volume(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sonos/volume(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/auth",
+      "regex": "^/api/spotify/auth(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/auth(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/callback",
+      "regex": "^/api/spotify/callback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/callback(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/disconnect",
+      "regex": "^/api/spotify/disconnect(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/disconnect(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/library",
+      "regex": "^/api/spotify/library(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/library(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/proxy",
+      "regex": "^/api/spotify/proxy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/proxy(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/refresh",
+      "regex": "^/api/spotify/refresh(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/refresh(?:/)?$"
+    },
+    {
+      "page": "/api/spotify/token",
+      "regex": "^/api/spotify/token(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spotify/token(?:/)?$"
+    },
+    {
+      "page": "/setup",
+      "regex": "^/setup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/setup(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

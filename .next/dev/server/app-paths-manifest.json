@@ -1,0 +1,13 @@
+{
+  "/api/preferences/route": "app/api/preferences/route.js",
+  "/api/reset-device/route": "app/api/reset-device/route.js",
+  "/api/sonos/callback/route": "app/api/sonos/callback/route.js",
+  "/api/sonos/control/route": "app/api/sonos/control/route.js",
+  "/api/sonos/disconnect/route": "app/api/sonos/disconnect/route.js",
+  "/api/sonos/login/route": "app/api/sonos/login/route.js",
+  "/api/sonos/playback/route": "app/api/sonos/playback/route.js",
+  "/api/sonos/state/route": "app/api/sonos/state/route.js",
+  "/api/sonos/volume/route": "app/api/sonos/volume/route.js",
+  "/page": "app/page.js",
+  "/setup/page": "app/setup/page.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/sonos/seek/route": "app/api/sonos/seek/route.js"
+}

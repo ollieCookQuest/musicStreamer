@@ -1,0 +1,3 @@
+{
+  "/api/sonos/library/metadata/route": "app/api/sonos/library/metadata/route.js"
+}
