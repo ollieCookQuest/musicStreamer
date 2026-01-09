@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -23,8 +21,6 @@ services:
       - ./prisma/migrations:/app/prisma/migrations
     networks:
       - music-streamer-network
-    depends_on:
-      - nginx
 
   nginx:
     image: nginx:alpine

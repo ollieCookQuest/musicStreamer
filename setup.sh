@@ -62,35 +62,44 @@ check_docker_compose() {
 # Install Docker
 install_docker() {
     print_info "Installing Docker..."
+    echo ""
     
-    # Update package index
-    sudo apt-get update
+    print_info "Step 1/5: Updating package list..."
+    sudo apt-get update -qq
+    print_success "Package list updated"
     
-    # Install prerequisites
-    sudo apt-get install -y \
+    print_info "Step 2/5: Installing prerequisites..."
+    sudo apt-get install -y -qq \
         ca-certificates \
         curl \
         gnupg \
-        lsb-release
+        lsb-release > /dev/null 2>&1
+    print_success "Prerequisites installed"
     
-    # Add Docker's official GPG key
+    print_info "Step 3/5: Adding Docker's official GPG key..."
     sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg > /dev/null 2>&1
+    print_success "GPG key added"
     
-    # Set up the repository
+    print_info "Step 4/5: Setting up Docker repository..."
     echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    print_success "Repository configured"
     
-    # Install Docker Engine
-    sudo apt-get update
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    print_info "Step 5/5: Installing Docker Engine and Docker Compose..."
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null 2>&1
+    print_success "Docker Engine installed"
     
-    # Add current user to docker group (requires logout/login to take effect)
+    # Add current user to docker group
+    print_info "Adding $USER to docker group..."
     sudo usermod -aG docker $USER
+    print_success "User added to docker group"
+    print_info "Note: You may need to log out and back in for group changes to take effect"
     
-    print_success "Docker installed successfully"
-    print_info "Note: You may need to log out and log back in for Docker group permissions to take effect"
+    echo ""
+    print_success "✓ Docker installation completed successfully!"
 }
 
 # Verify Docker installation
@@ -120,6 +129,7 @@ generate_certificates() {
     
     # Create certs directory
     mkdir -p certs
+    print_info "  → Created certs directory"
     
     # Get hostname/IP for certificate
     HOSTNAME=$(hostname -I | awk '{print $1}')
@@ -127,24 +137,34 @@ generate_certificates() {
         HOSTNAME="localhost"
     fi
     
+    print_info "  → Generating certificate for: localhost, $HOSTNAME"
+    
     # Generate self-signed certificate
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    if openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout certs/server.key \
         -out certs/server.crt \
         -subj "/C=US/ST=State/L=City/O=MusicStreamer/CN=$HOSTNAME" \
-        -addext "subjectAltName=IP:$HOSTNAME,DNS:localhost,DNS:$HOSTNAME" 2>/dev/null || \
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout certs/server.key \
-        -out certs/server.crt \
-        -subj "/C=US/ST=State/L=City/O=MusicStreamer/CN=$HOSTNAME"
+        -addext "subjectAltName=IP:$HOSTNAME,DNS:localhost,DNS:$HOSTNAME" 2>/dev/null; then
+        print_info "  → Certificate generated with Subject Alternative Names"
+    else
+        # Fallback for older OpenSSL versions
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout certs/server.key \
+            -out certs/server.crt \
+            -subj "/C=US/ST=State/L=City/O=MusicStreamer/CN=$HOSTNAME" 2>/dev/null
+        print_info "  → Certificate generated (basic version)"
+    fi
     
     # Set permissions
     chmod 600 certs/server.key
     chmod 644 certs/server.crt
+    print_info "  → Set proper file permissions"
     
-    print_success "SSL certificates generated in certs/ directory"
-    print_info "Certificate is valid for: localhost, $HOSTNAME"
-    print_info "Note: This is a self-signed certificate. Your browser will show a security warning."
+    print_success "✓ SSL certificates generated successfully"
+    print_info "  Certificate location: certs/server.crt"
+    print_info "  Private key location: certs/server.key"
+    print_info "  Valid for: localhost, $HOSTNAME"
+    print_info "  Note: This is a self-signed certificate. Your browser will show a security warning."
 }
 
 # Check if .env file exists
@@ -183,13 +203,75 @@ EOF
 
 # Build and start containers
 start_app() {
-    print_info "Building Docker image (this may take a few minutes)..."
-    docker compose build
+    echo ""
+    print_info "=========================================="
+    print_info "Starting Application Build & Deployment"
+    print_info "=========================================="
+    echo ""
     
-    print_info "Starting containers..."
-    docker compose up -d
+    # Step 1: Build Docker image
+    print_info "Step 1/3: Building Docker image..."
+    print_info "This may take 5-10 minutes on Raspberry Pi..."
+    echo ""
     
-    print_success "Application started!"
+    if docker compose build --progress=plain 2>&1 | tee /tmp/docker-build.log; then
+        echo ""
+        print_success "✓ Docker image built successfully!"
+    else
+        echo ""
+        print_error "✗ Failed to build Docker image"
+        print_info "Check /tmp/docker-build.log for details"
+        return 1
+    fi
+    
+    echo ""
+    print_info "Step 2/3: Starting containers..."
+    
+    # Start containers
+    if docker compose up -d; then
+        print_success "✓ Containers started!"
+    else
+        print_error "✗ Failed to start containers"
+        return 1
+    fi
+    
+    echo ""
+    print_info "Step 3/3: Verifying services..."
+    print_info "Waiting for services to initialize (this may take 10-20 seconds)..."
+    
+    # Wait for services to be ready
+    for i in {1..10}; do
+        sleep 2
+        if docker compose ps | grep -q "Up"; then
+            echo -n "."
+        fi
+    done
+    echo ""
+    
+    # Show container status
+    echo ""
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_info "Container Status:"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    docker compose ps
+    echo ""
+    
+    # Check if containers are healthy
+    APP_STATUS=$(docker compose ps app --format "{{.Status}}" 2>/dev/null || echo "unknown")
+    NGINX_STATUS=$(docker compose ps nginx --format "{{.Status}}" 2>/dev/null || echo "unknown")
+    
+    if [[ "$APP_STATUS" == *"Up"* ]] && [[ "$NGINX_STATUS" == *"Up"* ]]; then
+        print_success "✓ All containers are running!"
+    else
+        print_error "⚠ Some containers may not be running properly"
+        print_info "Check logs with: docker compose logs"
+    fi
+    
+    echo ""
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_info "Recent Application Logs:"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    docker compose logs --tail=15 app 2>/dev/null || echo "No logs available yet"
     echo ""
     
     # Get hostname/IP for display
@@ -198,36 +280,62 @@ start_app() {
         HOSTNAME="localhost"
     fi
     
+    echo ""
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_success "✓ Installation Complete!"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
     print_info "The app is now running with HTTPS!"
-    print_info "Access at: https://localhost or https://$HOSTNAME"
     print_info ""
-    print_info "Note: You'll see a security warning because we're using a self-signed certificate."
-    print_info "This is normal for local/private networks. Click 'Advanced' and 'Proceed' to continue."
-    print_info ""
-    print_info "Useful commands:"
-    print_info "  View logs: docker compose logs -f"
-    print_info "  Stop app: docker compose down"
-    print_info "  Restart: docker compose restart"
+    print_info "📍 Access URLs:"
+    print_info "   • https://localhost"
+    print_info "   • https://$HOSTNAME"
+    echo ""
+    print_info "⚠️  Security Note:"
+    print_info "   You'll see a security warning because we're using a self-signed certificate."
+    print_info "   This is normal for local/private networks."
+    print_info "   Click 'Advanced' → 'Proceed to localhost (unsafe)' to continue."
+    echo ""
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_info "Useful Commands:"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_info "  View all logs:        docker compose logs -f"
+    print_info "  View app logs:        docker compose logs -f app"
+    print_info "  View nginx logs:      docker compose logs -f nginx"
+    print_info "  Check status:         docker compose ps"
+    print_info "  Stop app:             docker compose down"
+    print_info "  Restart app:          docker compose restart"
+    print_info "  Restart specific:     docker compose restart app"
+    echo ""
 }
 
 # Main execution
 main() {
-    echo "Starting setup process..."
+    echo ""
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_info "Music Streamer Setup - Raspberry Pi"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     
-    # Check architecture
+    # Step 1: Check architecture
+    print_info "Step 1/5: Checking system architecture..."
     check_architecture
+    echo ""
     
-    # Check and install Docker
+    # Step 2: Check and install Docker
+    print_info "Step 2/5: Checking Docker installation..."
     if ! check_docker; then
+        echo ""
         read -p "Docker is not installed. Do you want to install it? (y/n) " -n 1 -r
-        echo
+        echo ""
         if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo ""
             install_docker
-            print_info "Please log out and log back in, then run this script again to continue"
-            exit 0
+            echo ""
+            print_info "Please log out and back in, or run 'newgrp docker' for group changes to take effect."
+            read -p "Press Enter after you've logged out/in or run 'newgrp docker'..."
         else
-            print_error "Docker is required to run this application"
+            print_error "Docker is required to continue. Exiting."
             exit 1
         fi
     fi
@@ -243,28 +351,43 @@ main() {
         print_error "Docker Compose is required but not found"
         exit 1
     fi
+    echo ""
     
-    # Generate SSL certificates
+    # Step 3: Generate SSL certificates
+    print_info "Step 3/5: Setting up SSL certificates..."
     generate_certificates
+    echo ""
     
-    # Check .env file
+    # Step 4: Check .env file
+    print_info "Step 4/5: Checking environment configuration..."
     ENV_EXISTS=true
     if ! check_env_file; then
         ENV_EXISTS=false
     fi
     
     if [ "$ENV_EXISTS" = false ]; then
-        read -p "Please update .env file with your credentials, then press Enter to continue..."
+        echo ""
+        print_info "Please update .env file with your Sonos API credentials:"
+        print_info "  - SONOS_CLIENT_ID"
+        print_info "  - SONOS_CLIENT_SECRET"
+        echo ""
+        read -p "Press Enter after updating .env file to continue..."
+        echo ""
     fi
     
     # Note: Database initialization is handled by Docker container entrypoint
     print_info "Database will be initialized automatically when the container starts"
+    echo ""
     
-    # Start the application
+    # Step 5: Build and start
+    print_info "Step 5/5: Building and starting application..."
     start_app
     
     echo ""
-    print_success "Setup complete! 🎉"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    print_success "✓ Setup completed successfully!"
+    print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
 }
 
 # Run main function
