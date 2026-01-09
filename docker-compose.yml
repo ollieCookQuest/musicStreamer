@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/arm64
+    container_name: music-streamer-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:./prisma/dev.db
+      - NEXT_TELEMETRY_DISABLED=1
+    env_file:
+      - .env
+    volumes:
+      # Persist database
+      - ./prisma/dev.db:/app/prisma/dev.db
+      - ./prisma/dev.db-journal:/app/prisma/dev.db-journal
+      # Persist Prisma migrations
+      - ./prisma/migrations:/app/prisma/migrations
+    networks:
+      - music-streamer-network
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:alpine
+    container_name: music-streamer-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/ssl:ro
+    networks:
+      - music-streamer-network
+    depends_on:
+      - app
+
+networks:
+  music-streamer-network:
+    driver: bridge

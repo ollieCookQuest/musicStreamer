@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Ultra-Premium Light Theme - Soft Silks and Glass */
+  --background: oklch(0.99 0.005 240);
+  --foreground: oklch(0.15 0.01 240);
+  
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.01 240);
+  
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.01 240);
+  
+  --primary: oklch(0.2 0.01 240); /* Deep Charcoal/Black for elegance */
+  --primary-foreground: oklch(0.99 0.005 240);
+  
+  --secondary: oklch(0.96 0.005 240);
+  --secondary-foreground: oklch(0.3 0.01 240);
+  
+  --muted: oklch(0.94 0.005 240);
+  --muted-foreground: oklch(0.5 0.01 240);
+  
+  --accent: oklch(0.9 0.01 240);
+  --accent-foreground: oklch(0.2 0.01 240);
+  
+  --destructive: oklch(0.55 0.15 25);
+  --destructive-foreground: oklch(0.99 0.005 240);
+  
+  --border: oklch(0.15 0.01 240 / 0.06);
+  --input: oklch(0.15 0.01 240 / 0.06);
+  --ring: oklch(0.15 0.01 240 / 0.1);
+  
+  --radius: 2rem;
+}
+
+.dark {
+  /* Ultra-Premium Dark Theme - Obsidian and Deep Voids */
+  --background: oklch(0.08 0.005 240);
+  --foreground: oklch(0.95 0.005 240);
+  
+  --card: oklch(0.12 0.005 240);
+  --card-foreground: oklch(0.95 0.005 240);
+  
+  --popover: oklch(0.1 0.005 240);
+  --popover-foreground: oklch(0.95 0.005 240);
+  
+  --primary: oklch(0.95 0.005 240); /* Pure Off-White for high contrast */
+  --primary-foreground: oklch(0.08 0.005 240);
+  
+  --secondary: oklch(0.15 0.005 240);
+  --secondary-foreground: oklch(0.8 0.005 240);
+  
+  --muted: oklch(0.14 0.005 240);
+  --muted-foreground: oklch(0.5 0.005 240);
+  
+  --accent: oklch(0.18 0.005 240);
+  --accent-foreground: oklch(0.95 0.005 240);
+  
+  --destructive: oklch(0.4 0.15 25);
+  --destructive-foreground: oklch(0.95 0.005 240);
+  
+  --border: oklch(1 0 0 / 0.05);
+  --input: oklch(1 0 0 / 0.05);
+  --ring: oklch(1 0 0 / 0.1);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 1.5rem);
+  --radius-md: calc(var(--radius) - 1rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 1rem);
+  --radius-2xl: calc(var(--radius) + 2rem);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground selection:bg-foreground/10 antialiased tracking-tight;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "salt";
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/2 backdrop-blur-2xl border border-white/5;
+  }
+  .glass-light {
+    @apply bg-white/40 dark:bg-black/20 backdrop-blur-3xl border border-white/20 dark:border-white/5;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Device-specific responsive utilities */
+  /* Both TheWall and TheDesk are 1280×800 landscape */
+  /* Optimized for 10.1" displays at 1280×800 resolution */
+  
+  /* Base optimizations for 1280×800 landscape */
+  @media (width: 1280px) and (height: 800px) {
+    html {
+      font-size: 16px; /* Base font size for 10.1" displays */
+    }
+    
+    /* Ensure touch targets are appropriately sized */
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+  
+  /* Device-specific adjustments via data attribute */
+  html[data-device="theWall"] {
+    /* TheWall-specific styles can be added here */
+  }
+  
+  html[data-device="theDesk"] {
+    /* TheDesk-specific styles can be added here */
+  }
+  
+  /* Responsive breakpoints optimized for 1280px width */
+  /* Since both devices are 1280×800, we optimize for this resolution */
+  @media (min-width: 1280px) {
+    /* Ensure components scale appropriately */
+    .device-responsive {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+  }
+}
