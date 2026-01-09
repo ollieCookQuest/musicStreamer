@@ -5,6 +5,7 @@ set -e
 if [ ! -f "/app/prisma/dev.db" ]; then
   echo "Initializing database..."
   cd /app
+  # Regenerate Prisma Client with correct binary targets for the runtime environment
   npx prisma generate
   npx prisma db push
 fi
