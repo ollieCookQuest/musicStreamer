@@ -39,6 +39,7 @@ services:
     depends_on:
       - app
 
+
 networks:
   music-streamer-network:
     driver: bridge
